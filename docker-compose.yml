@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  mysqldb:
+    container_name: mysql_container
+    image: mariadb:10
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 4.!YB&4yTP=B[+Ga
+      MYSQL_USER: stepupadmin
+      MYSQL_PASSWORD: 4.!YB&4yTP=B[+Ga
+      MYSQL_DATABASE: stepupdb
+
+    volumes:
+      - ./db_data:/var/lib/mysql
+
+  wordpress:
+    depends_on:
+      - mysqldb
+    image: wordpress:latest
+    container_name: wordpress_container
+    restart: always
+    ports:
+      - '80:80'
+    environment:
+      WORDPRESS_DB_HOST: mysqldb:3306
+      WORDPRESS_DB_NAME: stepupdb
+      WORDPRESS_DB_USER: stepupadmin
+      WORDPRESS_DB_PASSWORD: 4.!YB&4yTP=B[+Ga
+      WORDPRESS_TABLE_PREFIX: su_
+    volumes:
+      - './wp-app:/var/www/html'
+
+  pma:
+    image: phpmyadmin/phpmyadmin:4.7
+    container_name: phpmyadmin_container
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: mysqldb
+      PMA_USER: stepupadmin
+      PMA_PASSWORD: 4.!YB&4yTP=B[+Ga
+      PMA_PORT: 3306
+    
+volumes:
+  db_data:
